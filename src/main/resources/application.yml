@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+#Конфиг подключения к БД
+spring:
+  banner:
+    location: '/banner/banner.txt'
+  datasource:
+    driver-class-name: 'org.postgresql.Driver'
+    url: 'jdbc:postgresql://localhost:5432/test_bd'
+    username: 'username'
+    password: 'password'
+  flyway:
+    enabled: false  # включение/выключение механизма миграции базы данных Flyway
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true  # форматирование SQL запросов
+        generate_statistics: true  # генерация статистики
+
+#Конфиг подключения к telegram
+telegram:
+  bot:
+    token: 1234
+    username: username
+    bot_id: 1234
+    trigger_name: бот1;бот2 # имя-триггер на которое будет реагировать бот в общем чате
+
+#Конфиг подключения к vkontakte
+vkontakte:
+  api:
+    access_token: vk1.1234
+    version: 5.87
+    bot_id: 1234
+    trigger_name: бот1;бот2 # имя на которое будет реагировать бот
+
+yandex:
+  api:
+    key: 1234
+
+#Конфиг для openai
+openai:
+  api:
+    gpt4:
+      end_point: api.openai.com  # конечная точка API
+      authorization: Bearer 1234  # авторизация для доступа к API GPT-4
+      model: gpt-4  # модель, используемая в GPT-4
+
+    gpt3:
+      end_point: api.openai.com  # конечная точка API
+      authorization: Bearer 1234  # авторизация для доступа к API GPT-3
+      model: gpt-3.5-turbo  # модель, используемая в GPT-3
+
+    image_gen:
+      end_point: api.openai.com  # конечная точка API для генерации изображений
+      authorization: Bearer 1234  # авторизация для доступа к API для генерации изображений
+      model: gpt  # модель
+
+users:
+  ignore_list: 111=бот;222=имя2;333=имя3 # игнор лист
+  negative_list: 111=имя1;222=имя2;333=имя3 # список пользователей с негативным статусом
+
+
+
