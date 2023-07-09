@@ -181,7 +181,7 @@ public class GptService {
     }
 
     private void saveMsgDb(AbstractMessage msg, String msgText, String userRole) {
-        if (userRole.equals("user") && !msgText.isEmpty() && dialogRepository.searchMessages(msg.getUserId(), msgText)) {
+        if (userRole.equals("user") && !msgText.isEmpty() && dialogRepository.searchMessages(msg.getUserId(), msgText) || userRole.equals("assistant")) {
             if (msg.getSourceType().equals(SourceTypeEnum.VK_GROUP)) {
                 MessageJpa msgJpa = new MessageJpa((Comment) msg, msgText, userRole);
                 dialogRepository.saveMessage(msgJpa);
