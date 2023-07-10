@@ -34,9 +34,11 @@ vkontakte:
     bot_id: 1234
     trigger_name: бот1;бот2 # имя на которое будет реагировать бот
 
-yandex:
-  api:
-    key: 1234
+# Настройки API-ключей для внешних интеграций
+externalapi:
+  yandex_api_key: api_key
+  open_exchange_rates_api_key: api_key
+  open_weather_map_api_key: api_key
 
 #Конфиг для openai
 openai:

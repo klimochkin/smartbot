@@ -2,6 +2,7 @@ package com.kobi.smartbot.service;
 
 import com.kobi.smartbot.integrations.FixerService;
 import com.kobi.smartbot.integrations.GoogleService;
+import com.kobi.smartbot.integrations.OpenExchangeRatesService;
 import com.kobi.smartbot.integrations.YandexService;
 import com.kobi.smartbot.integrations.gpt.GptService;
 import com.kobi.smartbot.integrations.gpt.response.ImageGenerationResponse;
@@ -54,6 +55,7 @@ public class CommandExecuterService {
     private final TgCommandService tgService;
     private final YandexService yandexService;
     private final FixerService fixerService;
+    private final OpenExchangeRatesService exchangeRatesService;
     private final UserService userService;
     private final GptService gptService;
     private final OpenWeatherMapService weatherService;
@@ -70,6 +72,7 @@ public class CommandExecuterService {
                                   OpenWeatherMapService weatherService,
                                   TgCommandService tgService,
                                   GoogleService googleService,
+                                  OpenExchangeRatesService exchangeRatesService,
                                   FriendsService friendsService) {
         this.helper = helper;
         this.vkService = vkService;
@@ -81,6 +84,7 @@ public class CommandExecuterService {
         this.tgService = tgService;
         this.googleService = googleService;
         this.friendsService = friendsService;
+        this.exchangeRatesService = exchangeRatesService;
     }
 
     public List<AbstractMessage> execute(AbstractMessage msg) throws ClientException, ApiException, IOException, ParseException {
@@ -108,7 +112,7 @@ public class CommandExecuterService {
                 case GIF -> answer = vkService.getAnswerCommandGIF(msg);
                 case SAY -> answer = getAnswerCommandSAY(msg);
                 case WEATHER -> answer = getAnswerCommandWEATHER(msg);
-                case EURO -> answer = getAnswerCommandEURO(msg);
+                case RATES -> answer = getAnswerCommandRates(msg);
                 case ONLINE -> answer = getAnswerCommandOnline(msg);
                 case DETECTOR -> answer = getAnswerCommandDETECTOR(msg);
                 case SEARCH -> answer = getAnswerCommandSEARCH(msg);
@@ -175,8 +179,8 @@ public class CommandExecuterService {
         return msg;
     }
 
-    private AbstractMessage getAnswerCommandEURO(AbstractMessage msg) throws IOException {
-        String answer = fixerService.getFixer();
+    private AbstractMessage getAnswerCommandRates(AbstractMessage msg) {
+        String answer = exchangeRatesService.getExchangeRates();
         msg.setText(answer);
         return msg;
     }

@@ -1,5 +1,6 @@
 package com.kobi.smartbot.integrations.weather;
 
+import com.kobi.smartbot.config.ExternalApiProperties;
 import com.kobi.smartbot.integrations.weather.response.CurrentWeatherResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +14,18 @@ public class OpenWeatherMapService {
     private static final Logger LOG = LoggerFactory.getLogger(OpenWeatherMapService.class);
 
     private final WeatherMessageFormatter weatherMessageFormatter;
+    private final ExternalApiProperties apiProperties;
 
     @Autowired
-    public OpenWeatherMapService(WeatherMessageFormatter weatherMessageFormatter) {
+    public OpenWeatherMapService(WeatherMessageFormatter weatherMessageFormatter, ExternalApiProperties apiProperties) {
         this.weatherMessageFormatter = weatherMessageFormatter;
+        this.apiProperties = apiProperties;
     }
 
     public String getWeather(final String cityName) {
-        String keyAPI = "4566841e2ad1f4a06d9a5f79a515ef4f";
         String weatherUrl = "https://api.openweathermap.org/data/2.5/weather?q=%s&lang=ru&units=metric&appid=%s";
 
-        String url = String.format(weatherUrl, cityName, keyAPI);
+        String url = String.format(weatherUrl, cityName, apiProperties.getOpenWeatherMapApiKey());
         CurrentWeatherResponse currentWeatherResponse = getForObject(url, CurrentWeatherResponse.class);
         return weatherMessageFormatter.formatMessage(currentWeatherResponse);
     }
@@ -36,5 +38,4 @@ public class OpenWeatherMapService {
         }
         return response;
     }
-
 }

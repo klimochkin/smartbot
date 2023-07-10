@@ -194,33 +194,6 @@ public class VkLongPollService {
         return null;
     }
 
-    public LongPollResponse customExecute(GetLongPollEventsQuery events) throws ClientException {
-        String textResponse = events.executeAsString();
-        JsonReader jsonReader = new JsonReader(new StringReader(textResponse));
-        JsonObject json = (JsonObject) (new JsonParser()).parse(jsonReader);
-        if (json.has("failed")) {
-            int code = json.getAsJsonPrimitive("failed").getAsInt();
-            switch (code) {
-                case 1:
-                    int ts = json.getAsJsonPrimitive("ts").getAsInt();
-                    LOG.error("\'ts\' value is incorrect, minimal value is 1, maximal value is " + ts);
-                    return null;
-                case 2:
-                    return null;
-                default:
-                    throw new ClientException("Unknown LongPollServer exception, something went wrong.");
-            }
-        } else {
-            Gson gson = new Gson();
-            try {
-                return gson.fromJson(json, LongPollResponse.class);
-            } catch (JsonSyntaxException var7) {
-                LOG.error("Invalid JSON: " + textResponse, var7);
-                throw new ClientException("Can\'t parse json response");
-            }
-        }
-    }
-
     private void sendMessage(VkMessage msg) throws ClientException, ApiException {
         Random random = new Random();
         MessagesSendQuery msgSend = vkBotProperties.getVkClient().messages().send(vkBotProperties.getActor())
@@ -229,7 +202,6 @@ public class VkLongPollService {
                 .randomId(random.nextInt())
                 .unsafeParam("v", vkBotProperties.getVersion());
 
-        // Добавляем все вложения из списка
         List<String> attachments = msg.getAttachments();
         if (attachments != null && !attachments.isEmpty()) {
             String attachmentsString = String.join(",", attachments);
@@ -243,5 +215,4 @@ public class VkLongPollService {
         }
         LOG.debug("Ответ: " + msg.getText() + " Вложения: " + msg.getAttachments());
     }
-
 }

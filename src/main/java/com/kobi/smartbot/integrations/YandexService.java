@@ -1,5 +1,7 @@
 package com.kobi.smartbot.integrations;
 
+import com.kobi.smartbot.config.ExternalApiProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -8,19 +10,27 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Service
 public class YandexService {
 
+    private final ExternalApiProperties apiProperties;
+
+    @Autowired
+    public YandexService(ExternalApiProperties apiProperties) {
+        this.apiProperties = apiProperties;
+    }
+
     public byte[] speech(String text) throws IOException {
         String uri = "http://tts.voicetech.yandex.net/generate?text="
-                + URLEncoder.encode(text, "utf-8")
+                + URLEncoder.encode(text, StandardCharsets.UTF_8)
                 + "&format=mp3"
                 + "&lang=ru-RU"
                 + "&speaker=oksana"
 //                + "&speaker=alena"
                 + "&emotion=good"
-                + "&key=f540e9a9-9641-446c-a0bc-916ce0ecb9ea";
+                + "&key="+ apiProperties.getYandexApiKey();
 
         URL url = new URL(uri);
         HttpURLConnection conn = (HttpURLConnection) (url.openConnection());
