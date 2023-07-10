@@ -1,6 +1,5 @@
 package com.kobi.smartbot.service;
 
-import com.kobi.smartbot.integrations.FixerService;
 import com.kobi.smartbot.integrations.GoogleService;
 import com.kobi.smartbot.integrations.OpenExchangeRatesService;
 import com.kobi.smartbot.integrations.YandexService;
@@ -54,7 +53,6 @@ public class CommandExecuterService {
     private final VkCommandService vkService;
     private final TgCommandService tgService;
     private final YandexService yandexService;
-    private final FixerService fixerService;
     private final OpenExchangeRatesService exchangeRatesService;
     private final UserService userService;
     private final GptService gptService;
@@ -66,7 +64,6 @@ public class CommandExecuterService {
     public CommandExecuterService(Helper helper,
                                   VkCommandService vkService,
                                   YandexService yandexService,
-                                  FixerService fixerService,
                                   UserService userService,
                                   GptService gptService,
                                   OpenWeatherMapService weatherService,
@@ -77,7 +74,6 @@ public class CommandExecuterService {
         this.helper = helper;
         this.vkService = vkService;
         this.yandexService = yandexService;
-        this.fixerService = fixerService;
         this.userService = userService;
         this.gptService = gptService;
         this.weatherService = weatherService;
