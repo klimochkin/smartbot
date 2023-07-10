@@ -255,7 +255,7 @@ public class VkCommandService {
         return attachments;
     }
 
-    private AbstractMessage getPicture(Integer groupId, Integer limit) throws ClientException, ApiException {
+    private AbstractMessage getPicture(Integer groupId, Integer limit) {
         int retries = 1;
         while (retries < MAX_RETRIES) {
             try {
