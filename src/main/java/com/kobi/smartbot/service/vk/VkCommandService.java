@@ -53,21 +53,20 @@ import java.util.Random;
 public class VkCommandService {
 
     private static final Logger LOG = LoggerFactory.getLogger(VkCommandService.class);
-    
+
     private final Helper helper;
     private final ChatService chatService;
     private final GroupService groupService;
     private final VkBotProperties vkBotProperties;
-    private final GptService gptService;
 
+    private static final int MAX_RETRIES = 5;
 
     @Autowired
-    public VkCommandService(Helper helper, ChatService chatService, GroupService groupService, VkBotProperties vkBotProperties, GptService gptService) {
+    public VkCommandService(Helper helper, ChatService chatService, GroupService groupService, VkBotProperties vkBotProperties) {
         this.helper = helper;
         this.chatService = chatService;
         this.groupService = groupService;
         this.vkBotProperties = vkBotProperties;
-        this.gptService = gptService;
     }
 
     public AbstractMessage getAnswerCommandDVACH(AbstractMessage msg) throws ClientException, ApiException {
@@ -183,7 +182,7 @@ public class VkCommandService {
         return users;
     }
 
-    public  List<AbstractMessage> getAnswerCommandDETECTOR(AbstractMessage msg) {
+    public List<AbstractMessage> getAnswerCommandDETECTOR(AbstractMessage msg) {
         List<AbstractMessage> listAbsMsg = new ArrayList<>();
         if (SourceTypeEnum.VK_CHAT.equals(msg.getSourceType())) {
             VkMessage vkMessage = (VkMessage) msg;
@@ -257,7 +256,32 @@ public class VkCommandService {
     }
 
     private AbstractMessage getPicture(Integer groupId, Integer limit) throws ClientException, ApiException {
+        int retries = 1;
+        while (retries < MAX_RETRIES) {
+            try {
+                return getPictureExec(groupId, limit);
+            } catch (Exception e) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ie) {
+                    LOG.error("Ошибка при добавлении таймаута", ie);
+                }
+                retries++;
+                LOG.error("Сбой соединения. Попытка №" + retries, e);
+            }
+        }
+        return new AbstractMessage(
+                "Сбой соединения. Повторите запрос.",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
 
+    private AbstractMessage getPictureExec(Integer groupId, Integer limit) throws ClientException, ApiException {
         GetResponse response = vkBotProperties.getVkClient().wall().get(vkBotProperties.getActor())
                 .unsafeParam("v", vkBotProperties.getVersion())
                 .ownerId(groupId)
@@ -275,6 +299,14 @@ public class VkCommandService {
         List<String> attachList = new ArrayList<>();
         attachList.add(attach);
 
-        return new AbstractMessage(text, null, null, attachList, null, null, null);
+        return new AbstractMessage(
+                text,
+                null,
+                null,
+                attachList,
+                null,
+                null,
+                null
+        );
     }
 }
