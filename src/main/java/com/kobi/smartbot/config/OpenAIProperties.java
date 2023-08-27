@@ -3,10 +3,10 @@ package com.kobi.smartbot.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Configuration
 @ConfigurationProperties(prefix = "openai.api")
@@ -46,7 +46,7 @@ public class OpenAIProperties {
         private String authorization;
         private String model;
         private String systemMsg;
-        private final Map<String, String> replace = new HashMap<>();
+        private Map<String, String> replace = new HashMap<>();
 
         public String getEndPoint() {
             return endPoint;
@@ -85,11 +85,10 @@ public class OpenAIProperties {
         }
 
         public void setReplace(String replace) {
-            Pattern pattern = Pattern.compile("(\\w+)/([^;]+)");
-            Matcher matcher = pattern.matcher(replace);
-            while (matcher.find()) {
-                this.replace.put(matcher.group(1), matcher.group(2));
-            }
+            this.replace = Arrays.stream(replace.split(";"))
+                    .map(str -> str.split("="))
+                    .filter(arr -> arr.length == 2)
+                    .collect(Collectors.toMap(arr -> arr[0], arr -> arr[1]));
         }
     }
 }
