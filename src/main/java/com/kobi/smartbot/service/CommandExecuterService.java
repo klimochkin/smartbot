@@ -85,7 +85,12 @@ public class CommandExecuterService {
 
     public List<AbstractMessage> execute(AbstractMessage msg) throws ClientException, ApiException, IOException, ParseException {
         MessageTypeEnum type = msg.getMessageType();
-
+        String source = msg.getSourceType().equals(SourceTypeEnum.TELEGRAM) ? "TG" : "VK";
+        if (source.equals("VK")) {
+            String fio = userService.getFio(msg.getUserId(), source);
+            msg.setFio(fio);
+            msg.setUserName(fio);
+        }
         List<AbstractMessage> listMsg = new ArrayList<>();
 
         if (type instanceof UserEnum) {
@@ -115,6 +120,7 @@ public class CommandExecuterService {
                 case IMAGES -> answer = getImageChatGPT(msg);
                 case RESET -> answer = resetDialog(msg);
                 case COMMANDS -> answer = getAnswerCommandCOMMANDS(msg);
+                case EXECUTE -> answer = executeCommandRoot(msg);
                 default -> LOG.debug("No valid command found. Returning null.");
             }
             listMsg.add(answer);
@@ -191,7 +197,7 @@ public class CommandExecuterService {
         }
 
         if (isVkSourceType(msg.getSourceType())) {
-            users = vkService.getAnswerCommandOnline(msg);
+            users = vkService.getAllUserList(msg);
         }
 
         if (users != null) {
@@ -326,7 +332,7 @@ public class CommandExecuterService {
         return msg;
     }
 
-    private List<AbstractMessage> getAnswerChatGPT(AbstractMessage msg) throws ClientException {
+    private List<AbstractMessage> getAnswerChatGPT(AbstractMessage msg) {
         String answer = gptService.getAnswerChatGPT(msg);
 
         if (isVkSourceType(msg.getSourceType())) {
@@ -341,6 +347,19 @@ public class CommandExecuterService {
             listMsg.add(newMsg);
         }
         return listMsg;
+    }
+
+    AbstractMessage executeCommandRoot(AbstractMessage msg) {
+        String answer = "Команда выполнена";
+
+//        fillUsers();
+
+        msg.setText(answer);
+        return msg;
+    }
+
+    private void fillUsers() {
+        userService.fillUsers();
     }
 
     private AbstractMessage resetDialog(AbstractMessage msg) {

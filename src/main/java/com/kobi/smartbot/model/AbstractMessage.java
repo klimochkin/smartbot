@@ -5,6 +5,7 @@ import com.kobi.smartbot.model.enums.MessageTypeEnum;
 import com.kobi.smartbot.model.enums.SourceTypeEnum;
 
 import java.util.List;
+import java.util.Map;
 
 public class AbstractMessage implements Cloneable {
     private Integer messageId;
@@ -21,8 +22,10 @@ public class AbstractMessage implements Cloneable {
     private boolean mode;
     private String subject;
     private String userName;
+    private String fio;
     private String fromUserId;
     private boolean privateChat;
+    private String systemMsg;
 
     public AbstractMessage(){
     }
@@ -137,6 +140,7 @@ public class AbstractMessage implements Cloneable {
         this.endPointGpt = gptImageConfig.getEndPoint();
         this.authorizationGpt = gptImageConfig.getAuthorization();
         this.modelGpt = gptImageConfig.getModel();
+        this.text = applyFilter(this.getText(), gptImageConfig.getReplace());
     }
 
     public void setGptTextConfig(OpenAIProperties properties) {
@@ -149,6 +153,7 @@ public class AbstractMessage implements Cloneable {
         this.endPointGpt = gptTextConfig.getEndPoint();
         this.authorizationGpt = gptTextConfig.getAuthorization();
         this.modelGpt = gptTextConfig.getModel();
+        this.systemMsg = gptTextConfig.getSystemMsg();
     }
 
     public String getUserName() {
@@ -184,6 +189,22 @@ public class AbstractMessage implements Cloneable {
         this.privateChat = privateChat;
     }
 
+    public String getFio() {
+        return fio;
+    }
+
+    public void setFio(String fio) {
+        this.fio = fio;
+    }
+
+    public String getSystemMsg() {
+        return systemMsg;
+    }
+
+    public void setSystemMsg(String systemMsg) {
+        this.systemMsg = systemMsg;
+    }
+
     public AbstractMessage clone() {
         try {
             return (AbstractMessage) super.clone();
@@ -191,4 +212,12 @@ public class AbstractMessage implements Cloneable {
             throw new RuntimeException("Failed to clone AbstractMessage");
         }
     }
+
+    private String applyFilter(String sourceText, Map<String, String> replacements) {
+        for (Map.Entry<String,String> entry : replacements.entrySet()) {
+            sourceText = sourceText.replace(entry.getKey(),entry.getValue());
+        }
+        return sourceText;
+    }
+
 }

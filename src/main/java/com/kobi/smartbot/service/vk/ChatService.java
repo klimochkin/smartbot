@@ -33,9 +33,9 @@ public class ChatService {
     }
 
     // Получаем список участников беседы
-    public List<User> getChatUsers(String peer_id) throws ClientException, ApiException {
+    public List<User> getChatUsers(String peerId) throws ClientException, ApiException {
         List<ConversationMember> members = vkBotProperties.getVkClient().messages()
-                .getConversationMembers(vkBotProperties.getActor(), Integer.parseInt(peer_id))
+                .getConversationMembers(vkBotProperties.getActor(), Integer.parseInt(peerId))
                 .execute()
                 .getItems();
 

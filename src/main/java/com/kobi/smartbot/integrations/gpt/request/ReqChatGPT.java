@@ -14,7 +14,6 @@ public class ReqChatGPT {
     double top_p;
     double frequency_penalty;
     boolean stream = false;
-//    int max_tokens;
 
 
     public ReqChatGPT() {
@@ -26,24 +25,27 @@ public class ReqChatGPT {
         messages.add(msq);
     }
 
-    public ReqChatGPT(List<MessageJpa> messageJpaList, boolean devMode) {
+    public ReqChatGPT(List<MessageJpa> messageJpaList, boolean devMode, String systemMsg) {
         this.messages = new ArrayList<>();
+        String msgText;
+        msgText = systemMsg;
 
         if (devMode) {
-//            messages.add(new Message("Ты ассистент java-программиста. Помогай в вопросах Java-разработки. Используй русский язык"));
-            messages.add(new Message("Ты ассистент врача. Помогай в вопросах медицины. Используй русский язык"));
             temperature = 0.1;
             presence_penalty = 0;
             top_p = 0.1;
-            frequency_penalty = 2;
         } else {
-            messages.add(new Message("Используй русский язык, отвечай лаконично. Начинай каждый разговор с комплимента в первом сообщении"));
+            if (!messageJpaList.isEmpty()
+                    && messageJpaList.get(0).getFio() != null
+                    && !messageJpaList.get(0).getFio().isEmpty()) {
+                msgText += " Твоего собеседника зовут: " + messageJpaList.get(0).getFio() + ". Используй только имя.";
+            }
             temperature = 0.8;
             presence_penalty = 0;
             top_p = 0.8;
-            frequency_penalty = 2;
-//            max_tokens = 600;
         }
+        messages.add(new Message(msgText));
+        frequency_penalty = 2;
         for (MessageJpa msg : messageJpaList) {
             Message msq = new Message(msg);
             messages.add(msq);

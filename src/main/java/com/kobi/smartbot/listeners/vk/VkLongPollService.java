@@ -48,9 +48,7 @@ public class VkLongPollService {
 
         do {
             eventsQuery = createLongPollEventsQuery(timestamp);
-
             LongPollResponse response = executeAndGetResponse(eventsQuery);
-
             if (responseHasNoUpdates(response)) {
                 LOG.debug("Протухание ключа LongPoll! Попытка повторного получения...");
                 initializeLongPollParams();
@@ -68,10 +66,8 @@ public class VkLongPollService {
         GetLongPollEventsQuery eventsQuery = vkBotProperties.getVkClient()
                 .longPoll()
                 .getEvents("https://" + longPollParams.getServer(), longPollParams.getKey(), timestamp.toString());
-
         eventsQuery.waitTime(25);
         eventsQuery.unsafeParam("mode", 2);
-
         return eventsQuery;
     }
 
@@ -157,14 +153,17 @@ public class VkLongPollService {
         message.setSubject(arrayItem.get(5).toString());
         message.setText(arrayItem.get(6).toString().toLowerCase().replace("\"", ""));
         message.setPeerId(Long.parseLong(arrayItem.get(3).toString()));
-        boolean isPrivate = "\" ... \"".equals(message.getSubject());
-        message.setUserId(isPrivate ? message.getPeerId() : 0L);
-        message.setPrivateChat(isPrivate);
         try {
             JsonObject item7 = arrayItem.get(7).getAsJsonObject();
-            Long userId = item7.get("from").getAsLong();
-            message.setUserId(userId);
-
+            JsonElement from = item7.get("from");
+            if (from != null) {
+                Long userId = from.getAsLong();
+                message.setUserId(userId);
+            } else {
+                boolean isPrivate = "\" ... \"".equals(message.getSubject());
+                message.setPrivateChat(isPrivate);
+                message.setUserId(isPrivate ? message.getPeerId() : 0L);
+            }
             JsonElement jsonEl = item7.get("reply");
             if (jsonEl != null) {
                 String convMsgJson = jsonEl.getAsString();
@@ -174,7 +173,7 @@ public class VkLongPollService {
                         .getAsInt();
                 message.setFromUserId(getFromUserId(Math.toIntExact(message.getPeerId()), convMsgId));
             }
-        } catch (Exception ignored) {
+        } catch (Exception ignore) {
         }
 
         return message;

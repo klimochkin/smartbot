@@ -54,7 +54,7 @@ public class GptService {
         msg.setGptTextConfig(openAIProperties);
         saveMsgDb(msg, msg.getText(), "user");
 
-        int retries = 3;
+        int retries = 4;
         while (retries < MAX_RETRIES) {
             try {
                 return sendToGpt(msg);
@@ -100,7 +100,7 @@ public class GptService {
         headers.add("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
 
         List<MessageJpa> messageJpaList = dialogRepository.getLastDialog(msg);
-        ReqChatGPT reqChatGPT = new ReqChatGPT(messageJpaList, msg.isMode());
+        ReqChatGPT reqChatGPT = new ReqChatGPT(messageJpaList, msg.isMode(), msg.getSystemMsg());
         reqChatGPT.setModel(msg.getModelGpt());
         HttpEntity<ReqChatGPT> entity = new HttpEntity<>(reqChatGPT, headers);
 

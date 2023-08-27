@@ -89,8 +89,8 @@ public class FriendsService {
                     LOG.debug("Достигнут дневной лимит. Не удается отправить больше запросов в друзья.");
                     break;
                 }
-                if (invitationsSent >= 3) {
-                    LOG.debug("Отправлено 3 заявки в друзья.");
+                if (invitationsSent >= 5) {
+                    LOG.debug("Отправлено 5 заявок в друзья.");
                     break;
                 }
             }

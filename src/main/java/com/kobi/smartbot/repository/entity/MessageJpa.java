@@ -48,6 +48,9 @@ public class MessageJpa {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "fio")
+    private String fio;
+
     public MessageJpa() {
     }
 
@@ -60,6 +63,7 @@ public class MessageJpa {
         this.createStamp = LocalDateTime.now();
         this.userRole = userRole;
         this.username = msg.getUserName();
+        this.fio = msg.getFio();
         this.messageType = msg.getSourceType().name();
         this.status = "new";
     }
@@ -73,6 +77,7 @@ public class MessageJpa {
         this.createStamp = LocalDateTime.now();
         this.userRole = userRole;
         this.username = msg.getUserName();
+        this.fio = msg.getFio();
         this.messageType = msg.getSourceType().name();
         this.status = "new";
     }
@@ -84,6 +89,7 @@ public class MessageJpa {
         this.createStamp = LocalDateTime.now();
         this.userRole = userRole;
         this.username = msg.getUserName();
+        this.fio = msg.getFio();
         this.subject = msg.getSubject();
         this.messageType = msg.getSourceType().name();
         this.status = "new";
@@ -183,5 +189,13 @@ public class MessageJpa {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getFio() {
+        return fio;
+    }
+
+    public void setFio(String fio) {
+        this.fio = fio;
     }
 }

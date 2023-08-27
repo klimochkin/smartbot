@@ -13,17 +13,24 @@ create table message
     create_stamp      timestamp,
     parent_message_id numeric(15),
     status            varchar(255),
+    message_type varchar(255),
+    username varchar(255),
 
     constraint pk_message primary key (id)
 );
 
-alter table message add message_type varchar(255);
-alter table message add username varchar(255);
-
+alter table message add fio varchar(255);
 
 CREATE TABLE friend_request_counters
 (
     id            SERIAL PRIMARY KEY,
     request_date  DATE    NOT NULL UNIQUE,
     requests_sent INTEGER NOT NULL
+);
+
+create table users
+(
+    user_id  numeric(15)  primary key,
+    username varchar(255) not null,
+    source varchar(255)
 );

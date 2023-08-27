@@ -3,7 +3,6 @@ package com.kobi.smartbot.service.vk;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.kobi.smartbot.config.VkBotProperties;
-import com.kobi.smartbot.integrations.gpt.GptService;
 import com.kobi.smartbot.integrations.gpt.response.ImageGenerationResponse;
 import com.kobi.smartbot.model.AbstractMessage;
 import com.kobi.smartbot.model.Comment;
@@ -170,7 +169,7 @@ public class VkCommandService {
         return "doc" + doc.getOwnerId() + "_" + doc.getId();
     }
 
-    public List<User> getAnswerCommandOnline(AbstractMessage msg) throws ApiException, ClientException {
+    public List<User> getAllUserList(AbstractMessage msg) throws ApiException, ClientException {
         List<User> users = null;
         if (SourceTypeEnum.VK_CHAT.equals(msg.getSourceType())) {
             VkMessage chatVkMessage = (VkMessage) msg;

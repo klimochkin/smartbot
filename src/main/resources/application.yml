@@ -24,7 +24,7 @@ telegram:
     token: 1234
     username: username
     bot_id: 1234
-    trigger_name: бот1;бот2 # имя-триггер на которое будет реагировать бот в общем чате
+    trigger_name: бот1;бот2 # имя на которое будет реагировать бот (может быть несколько бот1,бот2)
 
 #Конфиг подключения к vkontakte
 vkontakte:
@@ -32,7 +32,7 @@ vkontakte:
     access_token: vk1.1234
     version: 5.87
     bot_id: 1234
-    trigger_name: бот1;бот2 # имя на которое будет реагировать бот
+    trigger_name: бот1;бот2 # имя на которое будет реагировать бот (может быть несколько бот1,бот2)
 
 # Настройки API-ключей для внешних интеграций
 externalapi:
@@ -47,20 +47,25 @@ openai:
       end_point: api.openai.com  # конечная точка API
       authorization: Bearer 1234  # авторизация для доступа к API GPT-4
       model: gpt-4  # модель, используемая в GPT-4
+      system_msg: "Отвечай лаконично на русском языке." # Системное сообщение со списком инструкций настроек для бота
+      replace: src_str1/repl_str1;src_str2/repl_str2; # Кастомный фильтр для замены подстроки в запросе
 
     gpt3:
       end_point: api.openai.com  # конечная точка API
       authorization: Bearer 1234  # авторизация для доступа к API GPT-3
       model: gpt-3.5-turbo  # модель, используемая в GPT-3
+      system_msg: "Отвечай лаконично на русском языке." # Системное сообщение со списком инструкций настроек для бота
+      replace: src_str1/repl_str1;src_str2/repl_str2; # Кастомный фильтр для замены подстроки в запросе
 
     image_gen:
       end_point: api.openai.com  # конечная точка API для генерации изображений
       authorization: Bearer 1234  # авторизация для доступа к API для генерации изображений
       model: gpt  # модель
+      replace: src_str1/repl_str1;src_str2/repl_str2; # Кастомный фильтр для замены подстроки в запросе
 
 users:
   ignore_list: 111=бот;222=имя2;333=имя3 # игнор лист
   negative_list: 111=имя1;222=имя2;333=имя3 # список пользователей с негативным статусом
 
-
-
+# фразы-триггеры, на которые будет реагировать бот
+phrase_trigger: phrase1;phrase2

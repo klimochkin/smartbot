@@ -35,7 +35,6 @@ public class TgBotListener extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            // Создаем экземпляр TgMessage и заполняем его данными
             TgMessage msg = createTgMessage(update);
 
             String answer;
@@ -68,6 +67,10 @@ public class TgBotListener extends TelegramLongPollingBot {
         msg.setPeerId(chatId);
         msg.setUserId(userId);
         msg.setUserName(update.getMessage().getFrom().getUserName());
+        String firstName = update.getMessage().getFrom().getFirstName();
+        if (firstName != null && !firstName.isEmpty()) {
+            msg.setFio(firstName + " " + update.getMessage().getFrom().getLastName());
+        }
         msg.setSubject(update.getMessage().getChat().getTitle());
         msg.setFromUserId(update.getMessage().getReplyToMessage() != null ? update.getMessage().getReplyToMessage().getFrom().getId().toString() : null);
         return msg;

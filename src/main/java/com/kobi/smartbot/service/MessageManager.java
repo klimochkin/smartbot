@@ -50,7 +50,7 @@ public class MessageManager {
             } catch (InterruptedException | ExecutionException e) {
                 LOG.error("", e);
             }
-            executor.shutdown(); // важно правильно закрыть executor после завершения работы
+            executor.shutdown();
         } else {
             LOG.debug("Не распознано...");
         }
